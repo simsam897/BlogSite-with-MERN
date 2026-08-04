@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Auth } from "../models/auth.model.js";
 
 export const signup = async (req, res, next) => {
@@ -28,7 +29,6 @@ export const signup = async (req, res, next) => {
       data: {
         username: user.username,
         email: user.email,
-        password: user.password,
       },
     });
   } catch (error) {
@@ -57,7 +57,7 @@ export const signin = async (req, res, next) => {
 
     const isMatchedPassword = await user.comparedPassword(password);
     if (!isMatchedPassword) {
-      res.status.json({
+      res.status(401).json({
         message: "invaild password",
       });
     }
@@ -75,3 +75,4 @@ export const signin = async (req, res, next) => {
     });
   }
 };
+
