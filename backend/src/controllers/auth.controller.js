@@ -76,3 +76,86 @@ export const signin = async (req, res, next) => {
   }
 };
 
+export const deleteUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const user = await Auth.findByIdAndDelete(id);
+    if (user) {
+      return res.status(201).json({
+        message: "user deleted successfully",
+      });
+    } else {
+      return res.status(400).json({
+        message: "user not found",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export const fetchAllUsers = async (req, res) => {
+  try {
+    const users = await Auth.find().select("-password");
+    if (users) {
+      return res.status(200).json({
+        message: "users fetched successfully",
+        data: {
+          users: users,
+        },
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({
+        message: "invalid user id",
+      });
+    }
+
+    const { username, email, password } = req.body;
+
+    const updateData = {};
+
+    if (username) updateData.username = username;
+    if (email) updateData.email = email;
+    if (password) updateData.password = password;
+
+    const updatedUser = await Auth.findByIdAndUpdate(
+      id,
+      updateData,
+
+      {
+        new: true,
+        runValidators: true,
+      },
+    ).select("-password");
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        message: "Updation failed",
+      });
+    }
+
+    return res.status(200).json({
+      message: "user updated successfullu",
+      user: updatedUser,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
