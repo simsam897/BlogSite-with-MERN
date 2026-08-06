@@ -1,6 +1,31 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { signinUser } from "../features/auth/authSlice";
 
 const Signin = () => {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("")
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { error, loading, user } = useSelector((state) => state.auth)
+
+  useEffect(() => {
+    if (user) {
+      navigate("/")
+    }
+  }, [user, navigate])
+
+  const handleSignin = (e) => {
+    e.preventDefault();
+    dispatch(signinUser(
+      {
+        email,
+        password
+      }
+    ))
+  }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 transition-all duration-300 hover:shadow-blue-200">
@@ -13,12 +38,13 @@ const Signin = () => {
         </div>
 
         {/* Form */}
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={handleSignin}>
           {/* Email */}
           <div className="relative">
             <input
               type="email"
               id="email"
+              onChange={(e) => setEmail(e.target.value)}
               placeholder=" "
               className="peer w-full border border-gray-300 rounded-lg px-4 pt-6 pb-2 outline-none transition-all duration-300 focus:border-blue-600"
             />
@@ -41,6 +67,7 @@ const Signin = () => {
               type="password"
               id="password"
               placeholder=" "
+              onChange={(e) => setPassword(e.target.value)}
               className="peer w-full border border-gray-300 rounded-lg px-4 pt-6 pb-2 outline-none transition-all duration-300 focus:border-blue-600"
             />
             <label

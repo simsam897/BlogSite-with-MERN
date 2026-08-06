@@ -1,6 +1,41 @@
 
-import { Link } from "react-router-dom"
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom"
+import { signupUser } from "../features/auth/authSlice";
 const Signup = () => {
+  const { loading, error, user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (user) {
+      navigate("/signin")
+    }
+  }, [user, navigate])
+
+
+  const handleSignup = (e) => {
+    e.preventDefault();
+
+    dispatch(signupUser({
+      username,
+      email,
+      password,
+
+    })
+    )
+  }
+
+
+
+
+
   return (
     <>
 
@@ -15,13 +50,15 @@ const Signup = () => {
           </div>
 
           {/* Form */}
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSignup}>
             {/* Username */}
             <div className="relative group">
               <input
+                onChange={(e) => setUsername(e.target.value)}
                 type="text"
                 id="username"
-                placeholder=" "
+                placeholder=""
+                required
                 className="peer w-full border border-gray-300 rounded-lg px-4 pt-6 pb-2 outline-none focus:border-blue-500 transition-all duration-300"
               />
               <label
@@ -40,6 +77,7 @@ const Signup = () => {
             {/* Email */}
             <div className="relative group">
               <input
+                onChange={(e) => setEmail(e.target.value)}
                 type="email"
                 id="email"
                 placeholder=" "
@@ -61,6 +99,7 @@ const Signup = () => {
             {/* Password */}
             <div className="relative group">
               <input
+                onChange={(e) => setPassword(e.target.value)}
                 type="password"
                 id="password"
                 placeholder=" "
@@ -86,6 +125,8 @@ const Signup = () => {
             >
               Sign Up
             </button>
+
+            {error && <p>{error}</p>}
 
             {/* Footer */}
             <div className="flex justify-between items-center text-sm">
