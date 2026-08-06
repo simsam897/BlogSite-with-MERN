@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { Auth } from "../models/auth.model.js";
+import { gentoken } from "../utils/token.js";
 
 export const signup = async (req, res, next) => {
   try {
@@ -61,14 +62,26 @@ export const signin = async (req, res, next) => {
         message: "invaild password",
       });
     }
-    return res.status(200).json({
-      message: "user signup successfully",
-      user: {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-      },
-    });
+
+    const token = gentoken(user.username, user.password, user.email);
+    console.log(token, "test");
+
+    return res
+      .status(200)
+      .cookie({
+        httpOnly: true,
+        secure: false,
+        samesite: "strict",
+        maxAge: 60 * 60 * 1000,
+      })
+      .json({
+        message: "user signup successfully",
+        user: {
+          _id: user._id,
+          username: user.username,
+          email: user.email,
+        },
+      });
   } catch (error) {
     return res.status(500).json({
       message: error.message,
@@ -159,3 +172,5 @@ export const updateUser = async (req, res) => {
     });
   }
 };
+
+
