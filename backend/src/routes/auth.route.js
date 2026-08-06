@@ -12,6 +12,6 @@ const router = express.Router();
 router.post("/signup", signup);
 router.post("/signin", signin);
 router.delete("/delete/:id", deleteUser);
-router.get("/getusers", fetchAllUsers(req, res));
-router.post("/updateuser/:id", updateUser(req, res));
+router.get("/getusers", fetchAllUsers);
+router.post("/updateuser/:id", updateUser);
 export default router;
