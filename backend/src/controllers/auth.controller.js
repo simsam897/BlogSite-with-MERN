@@ -173,4 +173,15 @@ export const updateUser = async (req, res) => {
   }
 };
 
-
+export const signout = async (req, res, next) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: false,
+      samesite: "strict",
+    });
+    res.status(200).json({ message: "signout successfull" });
+  } catch (error) {
+    res.status(500).json({ message: "Error signing out", error: message });
+  }
+};
