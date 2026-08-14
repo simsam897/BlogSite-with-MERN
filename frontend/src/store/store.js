@@ -5,5 +5,10 @@ export const store = configureStore({
   reducer: {
     auth: authReducer,
     theme: themeReducer,
+
+export const store = configureStore({
+  reducers: {
+    auth: authReducer,
+ 
   },
 });
