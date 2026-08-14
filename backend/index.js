@@ -1,5 +1,7 @@
 import dotenv from "dotenv";
 import authRouter from "./src/routes/auth.route.js";
+import categoryRouter from "./src/routes/category.route.js";
+import blogRouter from "./src/routes/blog.route.js";
 
 dotenv.config({ path: ".env" });
 import express from "express";
@@ -14,5 +16,7 @@ app.use(
 );
 app.use(express.json());
 app.use("/auth", authRouter);
+app.use("/category", categoryRouter);
 
+s
 export default app;
