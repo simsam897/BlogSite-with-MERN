@@ -17,6 +17,5 @@ app.use(
 app.use(express.json());
 app.use("/auth", authRouter);
 app.use("/category", categoryRouter);
-
-s
+app.use("/blog", blogRouter);
 export default app;
