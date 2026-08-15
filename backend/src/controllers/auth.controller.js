@@ -67,13 +67,13 @@ export const signin = async (req, res, next) => {
     console.log(token, "test");
 
     return res
-      .status(200)
-      .cookie({
+      .cookie("access_token", token, {
         httpOnly: true,
         secure: false,
-        samesite: "strict",
+        sameSite: "strict",
         maxAge: 60 * 60 * 1000,
       })
+      .status(200)
       .json({
         message: "user signup successfully",
         user: {
