@@ -57,14 +57,14 @@ export const signin = async (req, res, next) => {
     }
 
     const isMatchedPassword = await user.comparedPassword(password);
+
     if (!isMatchedPassword) {
-      res.status(401).json({
+      return res.status(401).json({
         message: "invaild password",
       });
     }
 
-    const token = gentoken(user.username, user.password, user.email);
-    console.log(token, "test");
+    const token = gentoken(user._id, user.role);
 
     return res
       .cookie("access_token", token, {
@@ -75,11 +75,10 @@ export const signin = async (req, res, next) => {
       })
       .status(200)
       .json({
-        message: "user signup successfully",
+        message: "user signin successfully",
         user: {
           _id: user._id,
-          username: user.username,
-          email: user.email,
+          role: user.role,
         },
       });
   } catch (error) {
@@ -175,13 +174,15 @@ export const updateUser = async (req, res) => {
 
 export const signout = async (req, res, next) => {
   try {
-    res.clearCookie("token", {
+    res.clearCookie("access_token", {
       httpOnly: true,
       secure: false,
-      samesite: "strict",
+      sameSite: "strict",
     });
     res.status(200).json({ message: "signout successfull" });
   } catch (error) {
-    res.status(500).json({ message: "Error signing out", error: message });
+    res
+      .status(500)
+      .json({ message: "Error signing out", error: error.message });
   }
 };
