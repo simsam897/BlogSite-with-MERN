@@ -19,6 +19,12 @@ const authSchema = new Schema(
       minLength: 6,
       maxLength: 16,
     },
+
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default:"user"
+    },
   },
   { timestamps: true },
 );
