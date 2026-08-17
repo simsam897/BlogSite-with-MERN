@@ -7,6 +7,7 @@ dotenv.config({ path: ".env" });
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 const app = express();
 app.use(
   cors({
@@ -15,7 +16,9 @@ app.use(
   }),
 );
 app.use(express.json());
+app.use(cookieParser());
 app.use("/auth", authRouter);
 app.use("/category", categoryRouter);
 app.use("/blog", blogRouter);
+
 export default app;
