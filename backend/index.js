@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import authRouter from "./src/routes/auth.route.js";
 import categoryRouter from "./src/routes/category.route.js";
 import blogRouter from "./src/routes/blog.route.js";
-
+import adminRouter from "./src/routes/admin.route.js";
 dotenv.config({ path: ".env" });
 import express from "express";
 import mongoose from "mongoose";
@@ -20,5 +20,5 @@ app.use(cookieParser());
 app.use("/auth", authRouter);
 app.use("/category", categoryRouter);
 app.use("/blog", blogRouter);
-
+app.use("/admin", adminRouter);
 export default app;
