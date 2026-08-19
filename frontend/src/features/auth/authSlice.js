@@ -27,11 +27,25 @@ export const signinUser = createAsyncThunk(
   async (userData, thunkAPI) => {
     try {
       const response = await api.post("/auth/signin", userData);
-      console.log(response.data.user);
+
       return response.data.user;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || "signin failed",
+      );
+    }
+  },
+);
+
+export const getcurrentUser = createAsyncThunk(
+  "auth/currentuser",
+  async (thunkAPI) => {
+    try {
+      const response = await api.get("/auth/currentuser");
+      return response.data.user;
+    } catch (error) {
+      thunkAPI.rejectWithValue(
+        error.response?.data?.message || "failed to get current user",
       );
     }
   },
@@ -53,7 +67,12 @@ export const signoutUser = createAsyncThunk(
 );
 
 //  initialState
-const initialState = { user: null, loading: false, error: null };
+const initialState = {
+  user: null,
+  loading: false,
+  error: null,
+  initialized: false,
+};
 
 const authSlice = createSlice({
   name: "auth",
@@ -110,6 +129,22 @@ const authSlice = createSlice({
 
       .addCase(signoutUser.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(getcurrentUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+
+      .addCase(getcurrentUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+
+      .addCase(getcurrentUser.rejected, (state, action) => {
+        state.loading = false;
+        state.user = null;
         state.error = action.payload;
       });
   },

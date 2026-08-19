@@ -1,32 +1,20 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
-
-import { RouterProvider } from 'react-router-dom'
-import { Provider } from "react-redux"
-import { store } from './store/store.js'
-import router from "./app/router.jsx"
-createRoot(document.getElementById('root')).render(
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { RouterProvider } from "react-router-dom";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import "./index.css";
+import { persistor, store } from "./store/store.js";
+import router from "./app/router.jsx";
+import AuthInitializer from "./features/auth/AuthInitilaizer";
+createRoot(document.getElementById("root")).render(
   <StrictMode>
-
-    <Provider store={store} >
-      <RouterProvider router={router} />
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <AuthInitializer>
+          <RouterProvider router={router} />
+        </AuthInitializer>
+      </PersistGate>
     </Provider>
-
-
-import { BrowserRouter } from 'react-router-dom'
-import { Provider } from "react-redux"
-import { store } from 'store'
-
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <BrowserRouter >
-      <Provider store={store} >
-        <App />
-      </Provider>
-    </BrowserRouter>
-
-
   </StrictMode>,
-)
+);
