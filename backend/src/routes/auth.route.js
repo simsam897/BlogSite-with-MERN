@@ -6,7 +6,9 @@ import {
   fetchAllUsers,
   updateUser,
   signout,
+  getCurrentUser,
 } from "../controllers/auth.controller.js";
+import { verifyToken } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
@@ -16,4 +18,5 @@ router.post("/signout", signout);
 router.delete("/delete/:id", deleteUser);
 router.get("/getusers", fetchAllUsers);
 router.post("/updateuser/:id", updateUser);
+router.get("/currentuser", verifyToken, getCurrentUser);
 export default router;
