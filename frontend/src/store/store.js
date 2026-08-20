@@ -4,10 +4,12 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import authReducer from "../features/auth/authSlice";
 import themeReducer from "../features/theme/themeSlice";
+import blogReducer from "../features/blog/blogSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
   theme: themeReducer,
+  blog: blogReducer,
 });
 
 const storage = {
@@ -29,7 +31,7 @@ const storage = {
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth"],
+  whitelist: ["auth", "blogs"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
