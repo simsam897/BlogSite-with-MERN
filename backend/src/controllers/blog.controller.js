@@ -37,19 +37,19 @@ export const createBlog = async (req, res, next) => {
 };
 
 export const getAllBlogs = async (req, res, next) => {
-try {
-    const blogs = await  Blog.find();
-
- return res.status(200).json({
-    message:"all blogs fetched successfully",
-    blogs
-  })
-
-} catch (error) {
-  return res.status(500).json({
-  message:error.message
-  })
-}
-
-
+  try {
+    const blog = await Blog.find()
+      .populate("author", "username")
+      .populate("category", "name")
+      .sort({ createdAt: -1 });
+    console.log(JSON.stringify(blog, null, 2));
+    return res.status(200).json({
+      message: "all blogs fetched successfully",
+      blog,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
 };
