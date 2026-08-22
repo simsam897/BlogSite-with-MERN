@@ -9,8 +9,15 @@ const blogSchema = new Schema(
     },
 
     coverImage: {
-      type: String,
-      default: "",
+      url: {
+        type: String,
+        required: true,
+      },
+
+      publicId: {
+        type: String,
+        required: true,
+      },
     },
 
     content: {
@@ -20,7 +27,7 @@ const blogSchema = new Schema(
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Auth",
-      default: "",
+      required:true,
     },
 
     category: {
