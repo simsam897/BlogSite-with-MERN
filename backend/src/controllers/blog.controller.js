@@ -1,18 +1,34 @@
 import { Blog } from "../models/blog.model.js";
+import uploadToCloudianry from "../utils/uploadToCloudianry.js";
 
 export const createBlog = async (req, res, next) => {
   try {
-    const { title, coverImage, content, author, category, tags } = req.body;
+    const { title, content, category, tags } = req.body;
 
-    if (!title || !coverImage || !content || !author || !category || !tags) {
+    const author = req.user._id;
+    if (!title || !content || !category || !tags) {
       return res.status(404).json({
         message: "all fileds are required",
       });
     }
 
+    if (!req.file) {
+      return res.status(400).json({
+        message: "cover image is required",
+      });
+    }
+
+    const result = await uploadToCloudianry(req.file.buffer, "blogCoverImage");
+
+    console.log(result.secure_url);
+    console.log(result.public_id);
+
     const blog = await Blog.create({
       title,
-      coverImage,
+      coverImage: {
+        url: result.secure_url,
+        publicId: result.public_id,
+      },
       content,
       author,
       category,
