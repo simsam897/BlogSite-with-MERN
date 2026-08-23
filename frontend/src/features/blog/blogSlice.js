@@ -15,6 +15,21 @@ export const getAllBlogs = createAsyncThunk(
   },
 );
 
+export const createBlogAPI = createAsyncThunk(
+  "blog/createblog",
+  async (formData, thunkAPI) => {
+    try {
+      const response = await api.post("/blog/create", formData);
+
+      console.log(response.data);
+      return response.data.blog;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "creating blog failed",
+      );
+    }
+  },
+);
 const initialState = {
   blogs: [],
   loading: false,
@@ -39,6 +54,23 @@ const blogSlice = createSlice({
 
       .addCase(getAllBlogs.rejected, (state, action) => {
         ((state.loading = false), (state.error = action.payload));
+      })
+
+      // create blog cases
+
+      .addCase(createBlogAPI.pending, (state) => {
+        ((state.loading = true), (state.error = null));
+      })
+
+      .addCase(createBlogAPI.fulfilled, (state, action) => {
+        state.loading = false;
+        state.blogs.unshift(action.payload);
+        state.error = null;
+      })
+
+      .addCase(createBlogAPI.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
