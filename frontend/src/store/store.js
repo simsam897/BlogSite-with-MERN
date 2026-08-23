@@ -5,11 +5,13 @@ import { persistReducer, persistStore } from "redux-persist";
 import authReducer from "../features/auth/authSlice";
 import themeReducer from "../features/theme/themeSlice";
 import blogReducer from "../features/blog/blogSlice";
+import categoryReducer from "../features/category/categorySlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
   theme: themeReducer,
   blog: blogReducer,
+  category: categoryReducer,
 });
 
 const storage = {
