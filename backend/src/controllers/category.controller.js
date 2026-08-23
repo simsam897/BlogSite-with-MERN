@@ -39,7 +39,9 @@ export const createCategory = async (req, res, next) => {
 
 export const getCategories = async (req, res, next) => {
   try {
-    const categories = await Category.find();
+    const categories = await Category.find().sort({
+      name: 1,
+    });
     if (categories) {
       return res.status(200).json({
         message: "categories fetched successfully",
