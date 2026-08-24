@@ -7,6 +7,7 @@ import {
   updateUser,
   signout,
   getCurrentUser,
+  getAllUsers,
 } from "../controllers/auth.controller.js";
 import { verifyToken } from "../middlewares/auth.middleware.js";
 
@@ -19,4 +20,5 @@ router.delete("/delete/:id", deleteUser);
 router.get("/getusers", fetchAllUsers);
 router.post("/updateuser/:id", updateUser);
 router.get("/currentuser", verifyToken, getCurrentUser);
+router.get("/getusers", getAllUsers);
 export default router;

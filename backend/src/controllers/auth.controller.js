@@ -208,3 +208,24 @@ export const getCurrentUser = async (req, res, next) => {
     });
   }
 };
+
+export const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await Auth.find();
+
+    if (users.length === 0) {
+      return res.status(404).json({
+        message: "No users found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "All users fetched successfully",
+      users,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
