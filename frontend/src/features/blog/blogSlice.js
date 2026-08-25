@@ -2,14 +2,30 @@ import api from "../../services/auth.service";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const getAllBlogs = createAsyncThunk(
-  "blog/getallblogs",
+  "blog/userBlogs",
   async (_, thunkAPI) => {
     try {
       const response = await api.get("/blog/getblogs");
+
       return response.data.blog;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "fecthing all blogs failed",
+        error.response?.data?.message || "Fetching all blogs failed",
+      );
+    }
+  },
+);
+
+export const userBlogs = createAsyncThunk(
+  "blog/userblogs",
+  async (_, thunkAPI) => {
+    try {
+      const response = await api.get("/blog/userblogs");
+
+      return response.data.blogs;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Fetching user blogs failed",
       );
     }
   },
@@ -21,15 +37,15 @@ export const createBlogAPI = createAsyncThunk(
     try {
       const response = await api.post("/blog/create", formData);
 
-      console.log(response.data);
       return response.data.blog;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "creating blog failed",
+        error.response?.data?.message || "Creating blog failed",
       );
     }
   },
 );
+
 const initialState = {
   blogs: [],
   loading: false,
@@ -37,38 +53,60 @@ const initialState = {
 };
 
 const blogSlice = createSlice({
-  name: "blogs",
+  name: "blog",
   initialState,
   reducers: {},
+
   extraReducers: (builder) => {
     builder
 
+      // GET ALL BLOGS
       .addCase(getAllBlogs.pending, (state) => {
-        ((state.loading = true), (state.error = null));
+        state.loading = true;
+        state.error = null;
       })
 
       .addCase(getAllBlogs.fulfilled, (state, action) => {
         state.loading = false;
-        ((state.blogs = action.payload), (state.error = null));
+        state.blogs = action.payload;
+        state.error = null;
       })
 
       .addCase(getAllBlogs.rejected, (state, action) => {
-        ((state.loading = false), (state.error = action.payload));
+        state.loading = false;
+        state.error = action.payload;
       })
 
-      // create blog cases
-
+      // CREATE BLOG
       .addCase(createBlogAPI.pending, (state) => {
-        ((state.loading = true), (state.error = null));
+        state.loading = true;
+        state.error = null;
       })
 
       .addCase(createBlogAPI.fulfilled, (state, action) => {
         state.loading = false;
-        state.blogs.unshift(action.payload);
+        state.blogs = action.payload;
         state.error = null;
       })
 
       .addCase(createBlogAPI.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // USER BLOGS
+      .addCase(userBlogs.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+
+      .addCase(userBlogs.fulfilled, (state, action) => {
+        state.loading = false;
+        state.blogs = action.payload;
+        state.error = null;
+      })
+
+      .addCase(userBlogs.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
