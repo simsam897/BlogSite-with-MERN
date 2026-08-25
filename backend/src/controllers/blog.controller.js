@@ -1,3 +1,4 @@
+import { Auth } from "../models/auth.model.js";
 import { Blog } from "../models/blog.model.js";
 import uploadToCloudianry from "../utils/uploadToCloudianry.js";
 
@@ -58,10 +59,31 @@ export const getAllBlogs = async (req, res, next) => {
       .populate("author", "username")
       .populate("category", "name")
       .sort({ createdAt: -1 });
-    console.log(JSON.stringify(blog, null, 2));
+
     return res.status(200).json({
       message: "all blogs fetched successfully",
       blog,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export const userblogs = async (req, res, next) => {
+  try {
+    const blogs = await Blog.find({ author: req.user._id });
+
+    if (!blogs || blogs.length === 0) {
+      return res.status(404).json({
+        message: "No blogs found for this user",
+      });
+    }
+
+    return res.status(200).json({
+      message: "myblogs fetched successfully",
+      blogs,
     });
   } catch (error) {
     return res.status(500).json({
