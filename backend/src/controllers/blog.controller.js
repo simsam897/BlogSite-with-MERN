@@ -91,3 +91,25 @@ export const userblogs = async (req, res, next) => {
     });
   }
 };
+
+export const deleteBlog = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const blog = await Blog.findOneAndDelete(id);
+
+    if (!blog) {
+      return res.status(400).json({
+        message: "id not found",
+      });
+    } else {
+      return res.status(200).json({
+        message: "blog deleted successfully",
+        id,
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "blog deletion is failed",
+    });
+  }
+};

@@ -1,6 +1,7 @@
 import express from "express";
 import {
   createBlog,
+  deleteBlog,
   getAllBlogs,
   userblogs,
 } from "../controllers/blog.controller.js";
@@ -12,5 +13,6 @@ const router = express.Router();
 router.post("/create", verifyToken, upload.single("coverImage"), createBlog);
 router.get("/getblogs", getAllBlogs);
 router.get("/userblogs", verifyToken, userblogs);
+router.delete("/deleteblog/:id", deleteBlog);
 
 export default router;
