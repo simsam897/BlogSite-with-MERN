@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FileText, Pencil, Trash2 } from "lucide-react";
 
-import { userBlogs } from "../features/blog/blogSlice";
+import { deleteBlog, userBlogs } from "../features/blog/blogSlice";
 
 const MyBlogs = () => {
   const dispatch = useDispatch();
@@ -13,12 +13,14 @@ const MyBlogs = () => {
     dispatch(userBlogs());
   }, [dispatch]);
 
-  const handleEdit = (blogId) => {
-    console.log("Edit blog:", blogId);
+  const handleEdit = (id) => {
+    console.log("Edit blog:", id);
   };
 
-  const handleDelete = (blogId) => {
-    console.log("Delete blog:", blogId);
+  const handleDelete = (_id) => {
+    // console.log("Delete blog:", blogId);
+
+    dispatch(deleteBlog(_id));
   };
 
   if (loading) {
