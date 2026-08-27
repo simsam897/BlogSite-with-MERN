@@ -5,7 +5,7 @@ export const createCategory = async (req, res, next) => {
     const { name } = req.body;
 
     if (!name) {
-      res.status(404).json({
+      return res.status(404).json({
         message: "all fileds are required",
       });
     }
@@ -21,7 +21,7 @@ export const createCategory = async (req, res, next) => {
     const category = await Category.create({ name });
 
     if (!category) {
-      res.status(404).json({
+      return res.status(404).json({
         message: "creating category failed",
       });
     }
@@ -75,9 +75,8 @@ export const deleteCategory = async (req, res, next) => {
 
     return res.status(200).json({
       message: "category deleted successfully",
+      id: category._id,
     });
-
-    x;
   } catch (error) {
     return res.status(500).json({
       message: error.message,
