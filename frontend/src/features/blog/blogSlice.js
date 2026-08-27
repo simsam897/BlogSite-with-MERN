@@ -125,24 +125,23 @@ const blogSlice = createSlice({
         state.error = action.payload;
       })
 
-     .addCase(deleteBlog.pending, (state) => {
-  state.loading = true;
-  state.error = null;
-})
+      .addCase(deleteBlog.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
 
-.addCase(deleteBlog.fulfilled, (state, action) => {
-  state.loading = false;
-  state.error = null;
+      .addCase(deleteBlog.fulfilled, (state, action) => {
+        state.loading = false;
 
-  state.blogs = state.blogs.filter(
-    (blog) => blog._id !== action.payload,
-  );
-})
+        state.blogs = state.blogs.filter((blog) => blog._id !== action.payload);
 
-.addCase(deleteBlog.rejected, (state, action) => {
-  state.loading = false;
-  state.error = action.payload;
-});
+        state.error = null;
+      })
+
+      .addCase(deleteBlog.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 
