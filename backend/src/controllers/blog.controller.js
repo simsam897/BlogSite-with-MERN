@@ -1,4 +1,4 @@
-import { Auth } from "../models/auth.model.js";
+// import { Auth } from "../models/auth.model.js";
 import { Blog } from "../models/blog.model.js";
 import uploadToCloudianry from "../utils/uploadToCloudianry.js";
 
@@ -62,6 +62,50 @@ export const getAllBlogs = async (req, res, next) => {
 
     return res.status(200).json({
       message: "all blogs fetched successfully",
+      blog,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export const updateBlog = async (req, res, next) => {
+  try {
+    const blogId = req.params.id;
+    const { title, content, category, tags } = req.body;
+    const blogUpdateData = { title, content, category, tags };
+
+    if (!req.file) {
+      return res.status(400).json({
+        message: "cover image is required",
+      });
+    }
+
+    const result = await uploadToCloudianry(req.file.buffer, "blogCoverImage");
+
+    console.log(result.secure_url);
+    console.log(result.public_id);
+
+    const blog = await Blog.findByIdAndUpdate(
+      blogId,
+      blogUpdateData,
+
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+
+    if (!blog) {
+      return res.status(401).json({
+        message: "creating blog failed",
+      });
+    }
+
+    return res.status(201).json({
+      message: "blog updated successfully",
       blog,
     });
   } catch (error) {
