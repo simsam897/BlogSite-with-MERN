@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { Auth } from "../models/auth.model.js";
 import { gentoken } from "../utils/token.js";
+import uploadToCloudianry from "../utils/uploadToCloudianry.js";
 
 export const signup = async (req, res, next) => {
   try {
@@ -127,45 +128,65 @@ export const fetchAllUsers = async (req, res) => {
   }
 };
 
-export const updateUser = async (req, res) => {
+export const updateUser = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    if (!req.user) {
+      return res.status(401).json({
+        message: "Unauthorized",
+      });
+    }
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    const user = await Auth.findById(req.user._id);
+
+    if (!user) {
       return res.status(404).json({
-        message: "invalid user id",
+        message: "User not found",
       });
     }
 
     const { username, email, password } = req.body;
 
-    const updateData = {};
-
-    if (username) updateData.username = username;
-    if (email) updateData.email = email;
-    if (password) updateData.password = password;
-
-    const updatedUser = await Auth.findByIdAndUpdate(
-      id,
-      updateData,
-
-      {
-        new: true,
-        runValidators: true,
-      },
-    ).select("-password");
-
-    if (!updatedUser) {
-      return res.status(404).json({
-        message: "Updation failed",
-      });
+    if (username) {
+      user.username = username;
     }
 
+    if (email) {
+      user.email = email;
+    }
+
+    if (password) {
+      user.password = password;
+    }
+
+    if (req.file) {
+      const result = await uploadToCloudianry(
+        req.file.buffer,
+        "profilePictures",
+      );
+
+      user.profilePicture = {
+        url: result.secure_url,
+        public_id: result.public_id,
+      };
+    }
+
+    await user.save();
+
+    const updatedUser = await Auth.findById(user._id).select("-password");
+
     return res.status(200).json({
-      message: "user updated successfullu",
+      message: "User updated successfully",
       user: updatedUser,
     });
   } catch (error) {
+    console.error("Update user error:", error);
+
+    if (error.code === 11000) {
+      return res.status(409).json({
+        message: "Username or email already exists",
+      });
+    }
+
     return res.status(500).json({
       message: error.message,
     });

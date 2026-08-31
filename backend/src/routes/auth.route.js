@@ -10,6 +10,7 @@ import {
   getAllUsers,
 } from "../controllers/auth.controller.js";
 import { verifyToken } from "../middlewares/auth.middleware.js";
+import upload from "../middlewares/multer.middleware.js";
 
 const router = express.Router();
 
@@ -18,7 +19,12 @@ router.post("/signin", signin);
 router.post("/signout", signout);
 router.delete("/delete/:id", deleteUser);
 router.get("/getusers", fetchAllUsers);
-router.post("/updateuser/:id", updateUser);
+router.patch(
+  "/updateuser",
+  verifyToken,
+  upload.single("profilePicture"),
+  updateUser,
+);
 router.get("/currentuser", verifyToken, getCurrentUser);
 router.get("/getusers", getAllUsers);
 export default router;
