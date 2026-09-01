@@ -1,9 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../services/auth.service.js";
 
-
 // SIGNUP USER
-
 
 export const signupUser = createAsyncThunk(
   "auth/signup",
@@ -21,9 +19,7 @@ export const signupUser = createAsyncThunk(
   },
 );
 
-
 // SIGNIN USER
-
 
 export const signinUser = createAsyncThunk(
   "auth/signin",
@@ -41,9 +37,7 @@ export const signinUser = createAsyncThunk(
   },
 );
 
-
 // GET CURRENT USER
-
 
 export const getcurrentUser = createAsyncThunk(
   "auth/currentuser",
@@ -61,9 +55,21 @@ export const getcurrentUser = createAsyncThunk(
   },
 );
 
-
 // SIGNOUT USER
 
+export const updateUser = createAsyncThunk(
+  "auth/updateuser",
+  async (updateUserData, thunkAPI) => {
+    try {
+      const response = await api.post("/auth/updateuser", updateUserData);
+      return response.data.updatedUser;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "updating user failed",
+      );
+    }
+  },
+);
 
 export const signoutUser = createAsyncThunk(
   "auth/signout",
@@ -81,9 +87,7 @@ export const signoutUser = createAsyncThunk(
   },
 );
 
- 
 // GET ALL USERS
-
 
 export const getAllUsers = createAsyncThunk(
   "auth/getAllUsers",
@@ -101,9 +105,7 @@ export const getAllUsers = createAsyncThunk(
   },
 );
 
-
 // DELETE USER
-
 
 export const deleteUser = createAsyncThunk(
   "auth/deleteUser",
@@ -122,9 +124,7 @@ export const deleteUser = createAsyncThunk(
   },
 );
 
-
 // INITIAL STATE
-
 
 const initialState = {
   user: null,
@@ -138,7 +138,6 @@ const initialState = {
 };
 
 // AUTH SLICE
-
 
 const authSlice = createSlice({
   name: "auth",
@@ -156,9 +155,7 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
 
-    
       // SIGNUP
-     
 
       .addCase(signupUser.pending, (state) => {
         state.loading = true;
@@ -176,9 +173,7 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
 
-      
       // SIGNIN
-      
 
       .addCase(signinUser.pending, (state) => {
         state.loading = true;
@@ -196,9 +191,7 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
 
-     
       // GET CURRENT USER
-      
 
       .addCase(getcurrentUser.pending, (state) => {
         state.loading = true;
@@ -219,9 +212,7 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
 
-     
       // SIGNOUT
-      
 
       .addCase(signoutUser.pending, (state) => {
         state.loading = true;
@@ -239,9 +230,7 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
 
-     
       // GET ALL USERS
-
 
       .addCase(getAllUsers.pending, (state) => {
         state.loading = true;
@@ -259,9 +248,7 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
 
-
       // DELETE USER
-    
 
       .addCase(deleteUser.pending, (state) => {
         state.loading = true;
@@ -280,7 +267,21 @@ const authSlice = createSlice({
       .addCase(deleteUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+
+      .addCase(updateUser.pending, (state) => {
+        ((state.loading = true), (state.error = null));
+      })
+
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.loading = false;
+        ((state.user = action.payload), (state.error = null));
+      })
+
+      .addCase(updateUser.rejected, (state, action) => [
+        (state.loading = false),
+        (state.error = action.payload),
+      ]);
   },
 });
 
