@@ -46,6 +46,20 @@ export const createBlogAPI = createAsyncThunk(
   },
 );
 
+export const updateBlog = createAsyncThunk(
+  "blog/update",
+  async (updateBlogData, thunkAPI) => {
+    try {
+      const response = await api.patch("blog/update/${id}", updateBlogData);
+      return response.data.blog;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "updating blog failed",
+      );
+    }
+  },
+);
+
 export const deleteBlog = createAsyncThunk(
   "blog/deleteblog",
   async (id, thunkAPI) => {
@@ -141,6 +155,25 @@ const blogSlice = createSlice({
       .addCase(deleteBlog.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+
+      .addCase(updateBlog.pending, (state) => {
+        ((state.loading = true), (state.error = null));
+      })
+
+      .addCase(updateBlog.fulfilled, (state, action) => {
+        state.loading = false;
+
+        const updatedBlog = action.payload;
+
+        state.blogs = state.blogs.map((blog) => {
+          blog._id === updatedBlog._id ? updatedBlog : blog;
+        });
+        state.error = null;
+      })
+
+      .addCase(updateBlog.rejected, (state, action) => {
+        ((state.loading = false), (state.error = action.payload));
       });
   },
 });
