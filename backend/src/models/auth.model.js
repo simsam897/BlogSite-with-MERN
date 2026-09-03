@@ -16,14 +16,23 @@ const authSchema = new Schema(
     password: {
       type: String,
       required: true,
-      minLength: 6,
-      maxLength: 16,
+    },
+
+    profilePicture: {
+      url: {
+        type: String,
+        default: "",
+      },
+      public_id: {
+        type: String,
+        default: "",
+      },
     },
 
     role: {
       type: String,
       enum: ["user", "admin"],
-      default:"user"
+      default: "user",
     },
   },
   { timestamps: true },
