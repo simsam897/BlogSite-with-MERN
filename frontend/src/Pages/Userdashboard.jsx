@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import { User, FileText, LogOut, Camera, Menu, X } from "lucide-react";
-
+import { signoutUser } from "../features/auth/authSlice";
+import { useNavigate, Link } from "react-router-dom";
 const Userdashboard = () => {
   const [activePage, setActivePage] = useState("profile");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
   });
-
-  const [profileImage, setProfileImage] = useState(null);
 
   // Handle input changes
   const handleChange = (e) => {
@@ -21,32 +20,15 @@ const Userdashboard = () => {
     });
   };
 
-  // Handle profile image
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-
-    if (file) {
-      setProfileImage(URL.createObjectURL(file));
-    }
-  };
-
-  // Handle profile update
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    console.log("Profile Data:", formData);
-    console.log("Profile Image:", profileImage);
-  };
-
-  // Handle sign out
-  const handleSignOut = () => {
-    console.log("User signed out");
-  };
-
   // Change dashboard page
   const handlePageChange = (page) => {
     setActivePage(page);
     setSidebarOpen(false);
+  };
+
+  const handleSignout = () => {
+    signoutUser();
+    navigate("/signin");
   };
 
   return (
@@ -102,42 +84,20 @@ const Userdashboard = () => {
             {/* Navigation */}
             <nav className="flex-1 p-4">
               <div className="space-y-2">
-                {/* Profile */}
+                <Link to="/userupdate">Profile update</Link>
                 <button
                   type="button"
-                  onClick={() => handlePageChange("profile")}
-                  className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left transition ${
-                    activePage === "profile"
-                      ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
-                      : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                  }`}
+                  onClick={() => navigate("/createblog")}
+                  className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left transition"
                 >
-                  <User size={20} />
-
-                  <span className="font-medium">Profile</span>
-                </button>
-
-
-
-
-                   <button
-                  type="button"
-                  onClick={() => handlePageChange("create blog")}
-                  className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left transition ${
-                    activePage === "create blog"
-                      ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
-                      : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                  }`}
-                >
-                  <User size={20} />
-
-                  <span className="font-medium">create Blog</span>
+                  <FileText size={20} />
+                  <span className="font-medium">Create Blog</span>
                 </button>
 
                 {/* Blogs */}
                 <button
                   type="button"
-                  onClick={() => handlePageChange("blogs")}
+                  onClick={() => navigate("/userblogs")}
                   className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left transition ${
                     activePage === "blogs"
                       ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
@@ -155,7 +115,7 @@ const Userdashboard = () => {
             <div className="border-t border-gray-200 p-4 dark:border-gray-800">
               <button
                 type="button"
-                onClick={handleSignOut}
+                onClick={handleSignout}
                 className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-red-600 transition hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
               >
                 <LogOut size={20} />
@@ -171,133 +131,6 @@ const Userdashboard = () => {
         ===================================================== */}
         <main className="min-w-0 flex-1">
           <div className="mx-auto max-w-5xl p-4 sm:p-6 lg:p-8">
-            {/* =================================================
-                PROFILE
-            ================================================= */}
-            {activePage === "profile" && (
-              <section>
-                {/* Heading */}
-                <div className="mb-8">
-                  <h1 className="text-2xl font-bold sm:text-3xl">Profile</h1>
-
-                  <p className="mt-2 text-gray-500 dark:text-gray-400">
-                    Update your profile information.
-                  </p>
-                </div>
-                {/* Profile Card */}
-                <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900 sm:p-8">
-                  {/* Profile Image */}
-                  <div className="mb-8 flex justify-center">
-                    <div className="relative">
-                      <div className="flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-4 border-gray-200 bg-gray-100 dark:border-gray-700 dark:bg-gray-800 sm:h-36 sm:w-36">
-                        {profileImage ? (
-                          <img
-                            src={profileImage}
-                            alt="Profile"
-                            className="h-full w-full object-cover"
-                          />
-                        ) : (
-                          <User size={55} className="text-gray-400" />
-                        )}
-                      </div>
-
-                      {/* Image Upload */}
-                      <label
-                        htmlFor="profilePicture"
-                        className="absolute bottom-1 right-1 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-gray-900 text-white shadow-lg transition hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200"
-                      >
-                        <Camera size={18} />
-
-                        <input
-                          id="profilePicture"
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageChange}
-                          className="hidden"
-                        />
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Form */}
-                  <form
-                    onSubmit={handleSubmit}
-                    className="flex flex-col items-center space-y-5"
-                  >
-                    {/* Username */}
-                    <div className="w-full sm:w-[80%]">
-                      <label
-                        htmlFor="username"
-                        className="mb-2 block text-sm font-medium"
-                      >
-                        Username
-                      </label>
-
-                      <input
-                        id="username"
-                        name="username"
-                        type="text"
-                        value={formData.username}
-                        onChange={handleChange}
-                        placeholder="Enter your username"
-                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-gray-900 focus:ring-1 focus:ring-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500 dark:focus:border-white dark:focus:ring-white"
-                      />
-                    </div>
-
-                    {/* Email */}
-                    <div className="w-full sm:w-[80%]">
-                      <label
-                        htmlFor="email"
-                        className="mb-2 block text-sm font-medium"
-                      >
-                        Email
-                      </label>
-
-                      <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        placeholder="Enter your email"
-                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-gray-900 focus:ring-1 focus:ring-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500 dark:focus:border-white dark:focus:ring-white"
-                      />
-                    </div>
-
-                    {/* Password */}
-                    <div className="w-full sm:w-[80%]">
-                      <label
-                        htmlFor="password"
-                        className="mb-2 block text-sm font-medium"
-                      >
-                        Password
-                      </label>
-
-                      <input
-                        id="password"
-                        name="password"
-                        type="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        placeholder="Enter new password"
-                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-gray-900 focus:ring-1 focus:ring-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500 dark:focus:border-white dark:focus:ring-white"
-                      />
-                    </div>
-
-                    {/* Update Button */}
-                    <div className="flex w-full justify-center pt-2">
-                      <button
-                        type="submit"
-                        className="rounded-lg bg-gray-900 px-8 py-3 font-medium text-white transition hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200"
-                      >
-                        Update Profile
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </section>
-            )}
-
             {/* =================================================
                 BLOGS
             ================================================= */}
