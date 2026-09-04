@@ -208,13 +208,11 @@ export const signout = async (req, res, next) => {
   }
 };
 
-export const getCurrentUser = async (req, res, next) => {
+export const getCurrentUser = async (req, res) => {
   try {
-    const user = await Auth.findById(req.user._id).select("-password");
-
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found",
+    if (!req.user) {
+      return res.status(401).json({
+        message: "Unauthorized",
       });
     }
 
@@ -222,8 +220,6 @@ export const getCurrentUser = async (req, res, next) => {
       user: req.user,
     });
   } catch (error) {
-    console.error("Current user error:", error);
-
     return res.status(500).json({
       message: error.message,
     });
