@@ -164,7 +164,7 @@ export const getSingleBlog = async (req, res, next) => {
 
     const blog = await Blog.findById(id)
       .populate("author", "username")
-      .populate("category", "category");
+      .populate("category", "name");
 
     if (!blog) {
       return res.status(404).json({
