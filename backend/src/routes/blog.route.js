@@ -3,6 +3,7 @@ import {
   createBlog,
   deleteBlog,
   getAllBlogs,
+  getSingleBlog,
   updateBlog,
   userblogs,
 } from "../controllers/blog.controller.js";
@@ -21,5 +22,5 @@ router.patch(
   upload.single("coverImage"),
   updateBlog,
 );
-
+router.get("/:id", getSingleBlog);
 export default router;

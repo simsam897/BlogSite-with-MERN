@@ -157,3 +157,28 @@ export const deleteBlog = async (req, res, next) => {
     });
   }
 };
+
+export const getSingleBlog = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const blog = await Blog.findById(id)
+      .populate("author", "username")
+      .populate("category", "category");
+
+    if (!blog) {
+      return res.status(404).json({
+        message: "blog not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "blog fetched sucessfully",
+      blog,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
