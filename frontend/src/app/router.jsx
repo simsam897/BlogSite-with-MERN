@@ -1,35 +1,104 @@
 import { createBrowserRouter } from "react-router-dom";
+import MainLayout from "../layouts/MainLayout";
 import Home from "../Pages/Home";
 import Signin from "../Pages/Signin";
 import Signup from "../Pages/Signup";
-
-import About from "../Pages/About"
-import MainLayout from "../layouts/MainLayout";
-
+import Blogs from "../Pages/Blogs";
+import BlogDetails from "../Pages/BlogDetails";
+// import UpdateBlog from "../Pages/UpdateBlog";
+import CreateBlog from "../Pages/CreateBlog";
+import Userdashboard from "../Pages/Userdashboard";
+import UserBlogs from "../Pages/UserBlogs";
+import ProtectedRoute from "../app/ProtectedRoute";
+import Categories from "../Pages/Categories";
+import AllUsers from "../admin/pages/AllUsers";
+import UpdateBlog from "../Pages/UpdateBlog";
+import UpdateUser from "../Pages/UpdateUser";
+import About from "../Pages/About";
 
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
-
     children: [
+      // Public routes
       {
         path: "/",
-        element: <Home />
-      },
-      {
-        path: "/signin",
-        element: <Signin />
-      },
-      {
-        path: "/signup",
-        element: <Signup />
+        element: <Home />,
       },
       {
         path: "/about",
-        element: <About />
-      }
-    ]
-  }
-])
+        element: <About />,
+      },
+      {
+        path: "/signin",
+        element: <Signin />,
+      },
+      {
+        path: "/signup",
+        element: <Signup />,
+      },
 
-export default router
+      // Protected routes
+      {
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: "/blogs",
+            element: <Blogs />,
+          },
+          {
+            path: "/blog/:id",
+            element: <BlogDetails />,
+          },
+          {
+            path: "/categories",
+            element: <Categories />,
+          },
+          {
+            path: "/allusers",
+            element: <AllUsers />,
+          },
+          {
+            path: "/updateblog/:id",
+            element: <UpdateBlog />,
+          },
+
+          // Dashboard + its nested pages
+          {
+            path: "/userdashboard",
+            element: <Userdashboard />,
+            children: [
+              {
+                index: true,
+                element: <UpdateUser />,
+              },
+              {
+                path: "profile",
+                element: <UpdateUser />,
+              },
+              {
+                path: "createblog",
+                element: <CreateBlog />,
+              },
+              {
+                path: "userblogs",
+                element: <UserBlogs />,
+              },
+              {
+                path: "updateblog/:id",
+                element: <UpdateBlog />,
+              },
+            ],
+          },
+
+          // {
+          //   path: "/admindashboard",
+          //   element: <AdminDashboard />,
+          // },
+        ],
+      },
+    ],
+  },
+]);
+
+export default router;
