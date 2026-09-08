@@ -1,12 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  Sun,
-  Moon,
-  User,
-  LogOut,
-  Search,
-  ChevronDown,
-} from "lucide-react";
+import { Sun, Moon, User, LogOut, Search, ChevronDown } from "lucide-react";
 
 import { Link } from "react-router-dom";
 
@@ -21,6 +14,8 @@ const Navbar = () => {
   const mode = useSelector((state) => state.theme.mode);
   const isDarkMode = mode === "dark";
 
+  const { user } = useSelector((state) => state.auth);
+
   // Profile dropdown
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
@@ -29,10 +24,7 @@ const Navbar = () => {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsProfileMenuOpen(false);
       }
     };
@@ -65,7 +57,6 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 border-b border-gray-200  dark:border-gray-700 bg-slate-900 dark:bg-black transition-colors duration-300">
       <div className="mx-auto flex h-16 max-w-7xl items-center px-4 sm:px-6 lg:px-8">
-
         {/* LOGO */}
         <div className="mr-auto flex-shrink-0">
           <Link
@@ -78,26 +69,31 @@ const Navbar = () => {
 
         {/* RIGHT SIDE */}
         <div className="flex items-center gap-4">
-
           {/* DESKTOP NAVIGATION */}
           <div className="hidden md:flex items-center gap-5">
             <Link
               to="/"
-              className="font-medium text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors duration-200"
+              className="font-medium text-gray-100 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors duration-200"
             >
               Home
             </Link>
 
             <Link
               to="/blogs"
-              className="font-medium text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors duration-200"
+              className="font-medium text-gray-100 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors duration-200"
             >
               Blogs
+            </Link>
+            <Link
+              to="/userdashboard"
+              className="font-medium text-gray-100 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors duration-200"
+            >
+              Dashboard
             </Link>
 
             <Link
               to="/about"
-              className="font-medium text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors duration-200"
+              className="font-medium text-gray-100 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors duration-200"
             >
               About Us
             </Link>
@@ -105,7 +101,6 @@ const Navbar = () => {
 
           {/* DESKTOP SEARCH + DARK MODE */}
           <div className="hidden md:flex items-center gap-2">
-
             {/* Search */}
             <form className="relative">
               <input
@@ -121,7 +116,7 @@ const Navbar = () => {
             <button
               onClick={handleToggleTheme}
               type="button"
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-100 transition-colors hover:bg-gray-500 dark:text-gray-300 dark:hover:bg-gray-700"
             >
               {isDarkMode ? (
                 <>
@@ -130,7 +125,7 @@ const Navbar = () => {
                 </>
               ) : (
                 <>
-                  <Moon className="h-4 w-4 text-gray-600 dark:text-gray-300" />
+                  <Moon className="h-4 w-4 text-gray-100 dark:text-gray-100" />
                   Dark
                 </>
               )}
@@ -151,35 +146,36 @@ const Navbar = () => {
           </div>
 
           {/* PROFILE */}
-          <div
-            className="relative"
-            ref={dropdownRef}
-          >
+          <div className="relative" ref={dropdownRef}>
             <button
               type="button"
               onClick={toggleProfileMenu}
               className="flex items-center gap-1 rounded-full focus:outline-none"
               aria-label="Profile menu"
             >
-              <img
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                alt="Profile"
-                className="h-9 w-9 cursor-pointer rounded-full border-2 border-gray-200 object-cover transition-colors duration-200 hover:border-blue-500 dark:border-gray-600 dark:hover:border-blue-400"
-              />
+              {user?.profilePicture?.url ? (
+                <img
+                  src={user.profilePicture.url}
+                  alt="Profile"
+                  className="h-9 w-9 cursor-pointer rounded-full border-2 border-gray-200 object-cover transition-colors duration-200 hover:border-blue-500 dark:border-gray-600 dark:hover:border-blue-400"
+                />
+              ) : (
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-gray-200 bg-gray-100 dark:border-gray-600 dark:bg-gray-700">
+                  <User className="h-5 w-5 text-gray-500 dark:text-gray-300" />
+                </div>
+              )}
 
               <ChevronDown
-                className={`hidden sm:block h-4 w-4 text-gray-600 transition-transform duration-200 dark:text-gray-300 ${isProfileMenuOpen ? "rotate-180" : ""
-                  }`}
+                className={`hidden h-4 w-4 text-gray-600 transition-transform duration-200 dark:text-gray-300 sm:block ${
+                  isProfileMenuOpen ? "rotate-180" : ""
+                }`}
               />
             </button>
-
             {/* DROPDOWN */}
             {isProfileMenuOpen && (
               <div className="absolute right-0 mt-2 w-52 overflow-hidden rounded-lg border border-gray-200 bg-white py-1 shadow-xl dark:border-gray-700 dark:bg-gray-800">
-
                 {/* Mobile Navigation */}
                 <div className="border-b border-gray-200 pb-2 dark:border-gray-700 md:hidden">
-
                   <Link
                     to="/"
                     onClick={() => setIsProfileMenuOpen(false)}
@@ -197,6 +193,14 @@ const Navbar = () => {
                   </Link>
 
                   <Link
+                    to="/userdashboard"
+                    onClick={() => setIsProfileMenuOpen(false)}
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                  >
+                    Dashboard
+                  </Link>
+
+                  <Link
                     to="/about"
                     onClick={() => setIsProfileMenuOpen(false)}
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
@@ -207,7 +211,7 @@ const Navbar = () => {
                   <button
                     type="button"
                     onClick={handleToggleTheme}
-                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-600 dark:text-gray-600 dark:hover:bg-gray-700"
                   >
                     {isDarkMode ? (
                       <>
@@ -223,16 +227,6 @@ const Navbar = () => {
                   </button>
                 </div>
 
-                {/* Profile */}
-                <Link
-                  to="/profile"
-                  onClick={() => setIsProfileMenuOpen(false)}
-                  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
-                >
-                  <User className="mr-2 h-4 w-4" />
-                  Profile
-                </Link>
-
                 {/* Sign Out */}
                 <button
                   type="button"
@@ -245,7 +239,6 @@ const Navbar = () => {
               </div>
             )}
           </div>
-
         </div>
       </div>
     </nav>
