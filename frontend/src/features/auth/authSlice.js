@@ -59,13 +59,33 @@ export const getcurrentUser = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
   "auth/updateuser",
+
   async (updateUserData, thunkAPI) => {
     try {
-      const response = await api.patch("/auth/updateuser", updateUserData);
-      return response.data.updatedUser;
+      const formData = new FormData();
+
+      if (updateUserData.username) {
+        formData.append("username", updateUserData.username);
+      }
+
+      if (updateUserData.email) {
+        formData.append("email", updateUserData.email);
+      }
+
+      if (updateUserData.password) {
+        formData.append("password", updateUserData.password);
+      }
+
+      if (updateUserData.profilePicture) {
+        formData.append("profilePicture", updateUserData.profilePicture);
+      }
+
+      const response = await api.patch("/auth/updateuser", formData);
+
+      return response.data.user;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "updating user failed",
+        error.response?.data?.message || "Updating user failed",
       );
     }
   },
@@ -275,13 +295,21 @@ const authSlice = createSlice({
 
       .addCase(updateUser.fulfilled, (state, action) => {
         state.loading = false;
-        ((state.user = action.payload), (state.error = null));
+
+        if (action.payload) {
+          state.user = {
+            ...state.user,
+            ...action.payload,
+          };
+        }
+
+        state.error = null;
       })
 
-      .addCase(updateUser.rejected, (state, action) => [
-        (state.loading = false),
-        (state.error = action.payload),
-      ]);
+      .addCase(updateUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 
