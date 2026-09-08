@@ -77,10 +77,7 @@ export const signin = async (req, res, next) => {
       .status(200)
       .json({
         message: "user signin successfully",
-        user: {
-          _id: user._id,
-          role: user.role,
-        },
+        user,
       });
   } catch (error) {
     return res.status(500).json({
@@ -210,14 +207,17 @@ export const signout = async (req, res, next) => {
 
 export const getCurrentUser = async (req, res) => {
   try {
-    if (!req.user) {
-      return res.status(401).json({
-        message: "Unauthorized",
+    const user = await Auth.findById(req.user._id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        message: "getting current user failed",
       });
     }
 
     return res.status(200).json({
-      user: req.user,
+      message: "get curreent user successfully",
+      user,
     });
   } catch (error) {
     return res.status(500).json({
