@@ -15,6 +15,11 @@ import AllUsers from "../admin/pages/AllUsers";
 import UpdateBlog from "../Pages/UpdateBlog";
 import UpdateUser from "../Pages/UpdateUser";
 import About from "../Pages/About";
+import AdminRoute from "./AdminRoute";
+import AllBlogs from "../admin/pages/AllBlogs";
+import AdminDashboard from "../admin/pages/AdminDashboard";
+
+import AllComments from "../admin/pages/Allcomments";
 
 const router = createBrowserRouter([
   {
@@ -54,10 +59,7 @@ const router = createBrowserRouter([
             path: "/categories",
             element: <Categories />,
           },
-          {
-            path: "/allusers",
-            element: <AllUsers />,
-          },
+
           {
             path: "/updateblog/:id",
             element: <UpdateBlog />,
@@ -87,6 +89,31 @@ const router = createBrowserRouter([
               {
                 path: "updateblog/:id",
                 element: <UpdateBlog />,
+              },
+            ],
+          },
+
+          {
+            element: <AdminRoute />,
+            children: [
+              {
+                element: <AdminDashboard />,
+                path: "/admindashboard",
+              },
+
+              {
+                element: <AllUsers />,
+                path: "/allusers",
+              },
+
+              {
+                element: <AllBlogs />,
+                path: "/allblogs",
+              },
+
+              {
+                element: <AllComments />,
+                path: "/allcomments",
               },
             ],
           },
