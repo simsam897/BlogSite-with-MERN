@@ -5,10 +5,11 @@ import { ArrowRight, CalendarDays, User, Tag } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { getAllBlogs } from "../features/blog/blogSlice";
+import { useNavigate } from "react-router-dom";
 
 const Blogs = () => {
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const { blogs, loading, error } = useSelector((state) => state.blog);
 
   useEffect(() => {
@@ -32,6 +33,10 @@ const Blogs = () => {
       </div>
     );
   }
+
+  const handleReadMore = (id) => {
+    navigate(`/blog/${id}`);
+  };
 
   return (
     <section className="min-h-screen bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
@@ -61,7 +66,7 @@ const Blogs = () => {
               {/* Cover Image */}
               <div className="relative h-56 overflow-hidden">
                 <img
-                  src={item.coverImage}
+                  src={item.coverImage?.url}
                   alt={item.title}
                   className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                 />
@@ -116,6 +121,7 @@ const Blogs = () => {
                 {/* Read More */}
                 <button
                   type="button"
+                  onClick={() => handleReadMore(item._id)}
                   className="mt-6 flex items-center gap-2 text-sm font-semibold text-indigo-600 transition-all duration-200 hover:gap-3"
                 >
                   Read More
