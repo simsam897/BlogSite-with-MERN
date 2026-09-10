@@ -1,37 +1,47 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { signinUser } from "../features/auth/authSlice";
 
 const Signin = () => {
-
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("")
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const { error, loading, user } = useSelector((state) => state.auth)
+  const [password, setPassword] = useState("");
 
-  useEffect(() => {
-    if (user) {
-      navigate("/")
-    }
-  }, [user, navigate])
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const handleSignin = (e) => {
+  const { error, loading } = useSelector((state) => state.auth);
+
+  const handleSignin = async (e) => {
     e.preventDefault();
-    dispatch(signinUser(
-      {
+
+    const result = await dispatch(
+      signinUser({
         email,
-        password
+        password,
+      }),
+    );
+
+    if (signinUser.fulfilled.match(result)) {
+      const user = result.payload;
+
+      if (user.role === "admin") {
+        navigate("/admindashboard");
+      } else {
+        navigate("/userdashboard");
       }
-    ))
-  }
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 px-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 transition-all duration-300 hover:shadow-blue-200">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 transition-all duration-300 hover:shadow-blue-200 dark:bg-black">
         {/* Heading */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-slate-800">Welcome Back</h1>
+          <h1 className="text-3xl font-bold text-slate-800 dark:text-white">
+            Welcome Back
+          </h1>
+
           <p className="text-gray-500 mt-2">
             Sign in to continue to your account.
           </p>
@@ -44,10 +54,13 @@ const Signin = () => {
             <input
               type="email"
               id="email"
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder=" "
+              required
               className="peer w-full border border-gray-300 rounded-lg px-4 pt-6 pb-2 outline-none transition-all duration-300 focus:border-blue-600"
             />
+
             <label
               htmlFor="email"
               className="absolute left-4 top-2 text-sm text-gray-500 transition-all
@@ -66,10 +79,13 @@ const Signin = () => {
             <input
               type="password"
               id="password"
-              placeholder=" "
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder=" "
+              required
               className="peer w-full border border-gray-300 rounded-lg px-4 pt-6 pb-2 outline-none transition-all duration-300 focus:border-blue-600"
             />
+
             <label
               htmlFor="password"
               className="absolute left-4 top-2 text-sm text-gray-500 transition-all
@@ -83,19 +99,21 @@ const Signin = () => {
             </label>
           </div>
 
+          {/* Error */}
+          {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+
           {/* Button */}
           <button
             type="submit"
-            className="w-full py-3 rounded-lg bg-blue-600 text-white font-semibold transition-all duration-300 hover:bg-blue-700 active:scale-95 shadow-lg hover:shadow-blue-300"
+            disabled={loading}
+            className="w-full py-3 rounded-lg bg-blue-600 text-white font-semibold transition-all duration-300 hover:bg-blue-700 active:scale-95 shadow-lg hover:shadow-blue-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Sign In
+            {loading ? "Signing In..." : "Sign In"}
           </button>
 
           {/* Footer */}
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-500">
-              Don't have an account?
-            </span>
+            <span className="text-gray-500">Don't have an account?</span>
 
             <Link
               to="/signup"

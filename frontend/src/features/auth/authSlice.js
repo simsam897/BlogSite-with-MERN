@@ -203,6 +203,7 @@ const authSlice = createSlice({
       .addCase(signinUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
+        state.initialized = true;
         state.error = null;
       })
 
