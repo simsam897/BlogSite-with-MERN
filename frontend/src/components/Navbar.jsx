@@ -84,12 +84,23 @@ const Navbar = () => {
             >
               Blogs
             </Link>
-            <Link
-              to="/userdashboard"
-              className="font-medium text-gray-100 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors duration-200"
-            >
-              Dashboard
-            </Link>
+            {user?.role === "admin" ? (
+              <Link
+                to="/admindashboard"
+                onClick={() => setIsProfileMenuOpen(false)}
+                className="font-medium text-gray-100 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors duration-200"
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <Link
+                to="/userdashboard"
+                onClick={() => setIsProfileMenuOpen(false)}
+                className="font-medium text-gray-100 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors duration-200"
+              >
+                Dashboard
+              </Link>
+            )}
 
             <Link
               to="/about"
@@ -192,13 +203,31 @@ const Navbar = () => {
                     Blogs
                   </Link>
 
-                  <Link
+                  {/* <Link
                     to="/userdashboard"
                     onClick={() => setIsProfileMenuOpen(false)}
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                   >
                     Dashboard
-                  </Link>
+                  </Link> */}
+
+                  {user?.role === "admin" ? (
+                    <Link
+                      to="/admindashboard"
+                      onClick={() => setIsProfileMenuOpen(false)}
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                    >
+                      Dashboard
+                    </Link>
+                  ) : (
+                    <Link
+                      to="/userdashboard"
+                      onClick={() => setIsProfileMenuOpen(false)}
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                    >
+                      Dashboard
+                    </Link>
+                  )}
 
                   <Link
                     to="/about"
